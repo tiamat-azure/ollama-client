@@ -1,6 +1,6 @@
 .PHONY: help curl curl-stream httpie httpie-stream webui-up webui-down webui-logs test
 
-PROMPT ?= "Bonjour, qui es-tu ?"
+PROMPT ?= Bonjour, qui es-tu ?
 
 help:
 	@echo "Cibles disponibles :"
@@ -14,16 +14,16 @@ help:
 	@echo "  make test                         - lance les tests d'intégration réels"
 
 curl:
-	@./scripts/ask-curl.sh $(PROMPT)
+	@./scripts/ask-curl.sh "$(PROMPT)"
 
 curl-stream:
-	@./scripts/ask-curl.sh $(PROMPT) --stream
+	@./scripts/ask-curl.sh "$(PROMPT)" --stream
 
 httpie:
-	@./scripts/ask-httpie.sh $(PROMPT)
+	@./scripts/ask-httpie.sh "$(PROMPT)"
 
 httpie-stream:
-	@./scripts/ask-httpie.sh $(PROMPT) --stream
+	@./scripts/ask-httpie.sh "$(PROMPT)" --stream
 
 webui-up:
 	docker compose up -d
