@@ -13,12 +13,14 @@ live only in the local `.env` (gitignored).
 cp .env.example .env        # fill in OLLAMA_PROXY_URL locally, never commit
 export $(grep -v '^#' .env | xargs)
 
-make curl PROMPT="..."          # curl, non-stream
-make curl-stream PROMPT="..."   # curl, streamed
-make httpie PROMPT="..."        # HTTPie, non-stream
-make httpie-stream PROMPT="..." # HTTPie, streamed
+make curl "..."          # curl, non-stream
+make curl-stream "..."   # curl, streamed
+make httpie "..."        # HTTPie, non-stream
+make httpie-stream "..." # HTTPie, streamed
 make webui-up / webui-down      # Open WebUI via docker compose
 make test                       # real integration tests against the remote API
+
+# PROMPT="..." still works as a fallback (e.g. make curl PROMPT="...")
 ```
 
 ## Architecture
@@ -27,7 +29,10 @@ make test                       # real integration tests against the remote API
   chat API), with a `--stream` flag for NDJSON streaming output.
 - `docker-compose.yml` - runs Open WebUI, pointed at `$OLLAMA_PROXY_URL` via
   `OLLAMA_BASE_URL`.
-- `Makefile` - single entry point wrapping the scripts and docker compose.
+- `Makefile` - single entry point wrapping the scripts and docker compose. Prompt is
+  passed positionally (`make curl "..."`); a catch-all `%:` no-op rule absorbs the extra
+  words so make doesn't try to build them as targets. `PROMPT="..."` remains supported as
+  a fallback.
 - `tests/test_api.sh` - real (non-mocked) checks against the live endpoint.
 
 ## Code conventions

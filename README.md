@@ -66,11 +66,14 @@ apparaître dans la liste.
 🛠️ Makefile
 
 ```sh
-make curl PROMPT="Bonjour"
-make curl-stream PROMPT="Bonjour"
-make httpie PROMPT="Bonjour"
-make httpie-stream PROMPT="Bonjour"
+make curl "Bonjour"
+make curl-stream "Bonjour"
+make httpie "Bonjour"
+make httpie-stream "Bonjour"
 make test
+
+# PROMPT="..." reste supporté en alternative :
+make curl PROMPT="Bonjour"
 ```
 
 🧪 Tests
