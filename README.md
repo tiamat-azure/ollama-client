@@ -1,9 +1,9 @@
-# ollama-client
+🦙 ollama-client
 
 Client(s) pour adresser un agent LLM Ollama (`qwen3:14b`) exposé via un proxy sur un
 réseau privé Tailscale, par trois moyens : curl, HTTPie, et Open WebUI.
 
-## Configuration
+⚙️ Configuration
 
 ```sh
 cp .env.example .env
@@ -16,7 +16,7 @@ Variables :
 - `OLLAMA_PROXY_URL` (obligatoire) - URL du proxy, ex. `https://<host>.ts.net`
 - `OLLAMA_MODEL` (optionnel, défaut `qwen3:14b`)
 
-## 1. Requêtes curl
+🌀 1. Requêtes curl
 
 ```sh
 # Non-stream
@@ -39,7 +39,7 @@ Exemple de réponse (non-stream) :
 }
 ```
 
-## 2. Requêtes HTTPie
+🐍 2. Requêtes HTTPie
 
 ```sh
 # Non-stream
@@ -51,7 +51,7 @@ http POST "$OLLAMA_PROXY_URL/api/chat" \
 ./scripts/ask-httpie.sh "Explique-moi Tailscale en 2 phrases" --stream
 ```
 
-## 3. Open WebUI
+🖥️ 3. Open WebUI
 
 ```sh
 make webui-up      # démarre Open WebUI sur http://localhost:3000
@@ -63,7 +63,7 @@ Open WebUI se connecte à `$OLLAMA_PROXY_URL` (variable injectée via `docker-co
 en tant que `OLLAMA_BASE_URL`). Ouvre `http://localhost:3000`, le modèle `qwen3:14b` doit
 apparaître dans la liste.
 
-## Makefile
+🛠️ Makefile
 
 ```sh
 make curl PROMPT="Bonjour"
@@ -73,7 +73,7 @@ make httpie-stream PROMPT="Bonjour"
 make test
 ```
 
-## Tests
+🧪 Tests
 
 Tests d'intégration réels contre l'API distante (nécessitent `OLLAMA_PROXY_URL` défini et
 l'accès réseau Tailscale) :
