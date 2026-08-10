@@ -26,7 +26,12 @@ curl -s -X POST "$OLLAMA_PROXY_URL/api/chat" \
   | jq -r '.message.content'
 
 # Stream (arrivée progressive de la réponse dans le shell)
-./scripts/ask-curl.sh "Explique-moi Tailscale en 2 phrases" --stream
+./scripts/ollama-curl.sh "Explique-moi Tailscale en 2 phrases" --stream
+
+# Autres syntaxes
+./scripts/ollama-curl.sh -p "Explique-moi Tailscale en 2 phrases"
+./scripts/ollama-curl.sh -r "system" -p "Tu es un expert réseau"
+./scripts/ollama-curl.sh -r "system" "Tu es un expert réseau"
 ```
 
 Exemple de réponse (non-stream) :
@@ -48,7 +53,12 @@ http POST "$OLLAMA_PROXY_URL/api/chat" \
   messages:='[{"role": "user", "content": "Bonjour"}]'
 
 # Stream
-./scripts/ask-httpie.sh "Explique-moi Tailscale en 2 phrases" --stream
+./scripts/ollama-http.sh "Explique-moi Tailscale en 2 phrases" --stream
+
+# Autres syntaxes
+./scripts/ollama-http.sh -p "Explique-moi Tailscale en 2 phrases"
+./scripts/ollama-http.sh -r "system" -p "Tu es un expert réseau"
+./scripts/ollama-http.sh -r "system" "Tu es un expert réseau"
 ```
 
 🖥️ 3. Open WebUI
@@ -71,6 +81,7 @@ make curl-stream "Bonjour"
 make httpie "Bonjour"
 make httpie-stream "Bonjour"
 make test
+make test-mock
 
 # PROMPT="..." reste supporté en alternative :
 make curl PROMPT="Bonjour"
@@ -83,4 +94,11 @@ l'accès réseau Tailscale) :
 
 ```sh
 make test
+```
+
+Tests avec API Ollama mockée en local (aucun réseau requis), qui vérifient le format exact
+des requêtes envoyées par `scripts/ollama-curl.sh` et `scripts/ollama-http.sh` :
+
+```sh
+make test-mock
 ```

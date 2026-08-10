@@ -19,32 +19,49 @@ make httpie "..."        # HTTPie, non-stream
 make httpie-stream "..." # HTTPie, streamed
 make webui-up / webui-down      # Open WebUI via docker compose
 make test                       # real integration tests against the remote API
+make test-mock                  # local tests against a mocked Ollama API
 
 # PROMPT="..." still works as a fallback (e.g. make curl PROMPT="...")
+
+# Standalone scripts (usable outside make):
+./scripts/ollama-curl.sh "prompt"
+./scripts/ollama-curl.sh -p "prompt"
+./scripts/ollama-curl.sh -r "role" -p "prompt"
+./scripts/ollama-curl.sh -r "role" "prompt"
+# ./scripts/ollama-http.sh has the identical CLI
 ```
 
 ## Architecture
 
-- `scripts/ask-curl.sh`, `scripts/ask-httpie.sh` - request the proxy's `/api/chat` (Ollama
-  chat API), with a `--stream` flag for NDJSON streaming output.
+- `scripts/ollama-curl.sh`, `scripts/ollama-http.sh` - request the proxy's `/api/chat`
+  (Ollama chat API). Both share the same CLI: positional prompt, `-p <prompt>`,
+  `-r <role>` (default `user`), and `--stream` for NDJSON streaming output.
 - `docker-compose.yml` - runs Open WebUI, pointed at `$OLLAMA_PROXY_URL` via
   `OLLAMA_BASE_URL`.
-- `Makefile` - single entry point wrapping the scripts and docker compose. Prompt is
-  passed positionally (`make curl "..."`); a catch-all `%:` no-op rule absorbs the extra
-  words so make doesn't try to build them as targets. `PROMPT="..."` remains supported as
-  a fallback.
+- `Makefile` - thin wrapper around the scripts and docker compose. Prompt is passed
+  positionally (`make curl "..."`); a catch-all `%:` no-op rule absorbs the extra words so
+  make doesn't try to build them as targets. `PROMPT="..."` remains supported as a
+  fallback.
 - `tests/test_api.sh` - real (non-mocked) checks against the live endpoint.
+- `tests/mock_ollama_server.py`, `tests/test_mock_api.sh` - local mock of `/api/chat`
+  (stdlib `http.server`) that logs each received request body and asserts the exact JSON
+  shape (`model`, `role`, `content`, `stream`) sent by both scripts across all CLI forms.
 
 ## Code conventions
 
-- Plain POSIX-ish bash (`set -euo pipefail`), no other language/runtime for now.
-- Use `jq` to build/parse JSON payloads; never hand-craft JSON strings.
+- Plain POSIX-ish bash (`set -euo pipefail`), no other language/runtime for scripts; the
+  mock server is stdlib-only Python 3 (no dependencies).
+- Use `jq -c` (compact output) to build/parse JSON payloads; never hand-craft JSON
+  strings, and never emit pretty-printed multi-line JSON as a request body.
 
 ## Tests
 
-`tests/test_api.sh`, run via `make test`. These are real network tests (not mocked) -
-require `OLLAMA_PROXY_URL` set and Tailscale connectivity. Add one check per new request
-mode (e.g. a new script or flag) mirroring the existing pattern.
+- `tests/test_api.sh`, run via `make test`. Real network tests (not mocked) - require
+  `OLLAMA_PROXY_URL` set and Tailscale connectivity.
+- `tests/test_mock_api.sh`, run via `make test-mock`. No network required; spins up
+  `tests/mock_ollama_server.py` on a local ephemeral port and asserts the JSON body of
+  every request. Add one check per new request mode (e.g. a new script or flag) mirroring
+  the existing pattern.
 
 ## Known pitfalls
 
