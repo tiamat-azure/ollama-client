@@ -23,19 +23,22 @@ make test-mock                  # local tests against a mocked Ollama API
 
 # PROMPT="..." still works as a fallback (e.g. make curl PROMPT="...")
 
-# Standalone scripts (usable outside make):
-./scripts/ollama-curl.sh "prompt"
-./scripts/ollama-curl.sh -p "prompt"
-./scripts/ollama-curl.sh -r "role" -p "prompt"
-./scripts/ollama-curl.sh -r "role" "prompt"
-# ./scripts/ollama-http.sh has the identical CLI
+# Standalone scripts (usable outside make, or via symlinks in ~/.local/bin
+# without the .sh extension and without ./):
+ollama-curl "prompt"
+ollama-curl -r "role" "prompt"
+ollama-curl --stream "prompt"
+# ollama-http has the identical CLI
 ```
 
 ## Architecture
 
 - `scripts/ollama-curl.sh`, `scripts/ollama-http.sh` - request the proxy's `/api/chat`
-  (Ollama chat API). Both share the same CLI: positional prompt, `-p <prompt>`,
-  `-r <role>` (default `user`), and `--stream` for NDJSON streaming output.
+  (Ollama chat API). Both share the same CLI: positional `<prompt>` (required, no `-p`
+  flag), `-r <role>` (default `user`), and `--stream` for NDJSON streaming output.
+  Recommended local setup: symlink both into `~/.local/bin` without the `.sh` extension
+  (e.g. `ln -s "$(pwd)/scripts/ollama-curl.sh" ~/.local/bin/ollama-curl`) so they run as
+  `ollama-curl`/`ollama-http` without `./`.
 - `docker-compose.yml` - runs Open WebUI, pointed at `$OLLAMA_PROXY_URL` via
   `OLLAMA_BASE_URL`.
 - `Makefile` - thin wrapper around the scripts and docker compose. Prompt is passed

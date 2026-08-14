@@ -56,13 +56,6 @@ check_field "ollama-curl positionnel: role par défaut" '.messages[0].role' "use
 check_field "ollama-curl positionnel: content" '.messages[0].content' "Bonjour"
 check_field "ollama-curl positionnel: stream" '.stream' "false"
 
-"$ROOT_DIR/scripts/ollama-curl.sh" -p "Salut" >/dev/null
-check_field "ollama-curl -p: content" '.messages[0].content' "Salut"
-
-"$ROOT_DIR/scripts/ollama-curl.sh" -r "system" -p "Tu es un assistant" >/dev/null
-check_field "ollama-curl -r -p: role" '.messages[0].role' "system"
-check_field "ollama-curl -r -p: content" '.messages[0].content' "Tu es un assistant"
-
 "$ROOT_DIR/scripts/ollama-curl.sh" -r "system" "Contexte" >/dev/null
 check_field "ollama-curl -r positionnel: role" '.messages[0].role' "system"
 check_field "ollama-curl -r positionnel: content" '.messages[0].content' "Contexte"
@@ -77,13 +70,6 @@ check_field "ollama-http positionnel: model" '.model' "qwen3:14b"
 check_field "ollama-http positionnel: role par défaut" '.messages[0].role' "user"
 check_field "ollama-http positionnel: content" '.messages[0].content' "Bonjour"
 check_field "ollama-http positionnel: stream" '.stream' "false"
-
-"$ROOT_DIR/scripts/ollama-http.sh" -p "Salut" >/dev/null
-check_field "ollama-http -p: content" '.messages[0].content' "Salut"
-
-"$ROOT_DIR/scripts/ollama-http.sh" -r "system" -p "Tu es un assistant" >/dev/null
-check_field "ollama-http -r -p: role" '.messages[0].role' "system"
-check_field "ollama-http -r -p: content" '.messages[0].content' "Tu es un assistant"
 
 "$ROOT_DIR/scripts/ollama-http.sh" -r "system" "Contexte" >/dev/null
 check_field "ollama-http -r positionnel: role" '.messages[0].role' "system"

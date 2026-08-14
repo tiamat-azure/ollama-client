@@ -26,7 +26,7 @@ help:
 	@echo "  make httpie \"...\"         - requête via scripts/ollama-http.sh (non-stream)"
 	@echo "  make httpie-stream \"...\"  - requête via scripts/ollama-http.sh (stream)"
 	@echo "  (alternative : make curl PROMPT=\"...\")"
-	@echo "  (scripts autonomes : scripts/ollama-curl.sh / scripts/ollama-http.sh, -r <role> -p <prompt>)"
+	@echo "  (scripts autonomes : scripts/ollama-curl.sh / scripts/ollama-http.sh, [-r <role>] [--stream] \"<prompt>\")"
 	@echo "  make webui-up                     - démarre Open WebUI (docker compose)"
 	@echo "  make webui-down                   - arrête Open WebUI"
 	@echo "  make webui-logs                   - logs Open WebUI"

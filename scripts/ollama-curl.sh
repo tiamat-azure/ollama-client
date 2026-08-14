@@ -2,12 +2,10 @@
 # Interroge l'API Ollama distante via curl.
 # Usage:
 #   ollama-curl "<prompt>"
-#   ollama-curl -p "<prompt>"
-#   ollama-curl -r "<role>" -p "<prompt>"
 #   ollama-curl -r "<role>" "<prompt>"
+#   ollama-curl --stream "<prompt>"
 # Options:
 #   -r <role>   rôle du message (défaut: user)
-#   -p <prompt> prompt (alternative à l'argument positionnel)
 #   --stream    active le streaming NDJSON
 set -euo pipefail
 
@@ -19,7 +17,7 @@ STREAM="false"
 PROMPT=""
 
 usage() {
-  echo "Usage: $0 [-r <role>] [-p <prompt>] [--stream] [\"<prompt>\"]" >&2
+  echo "Usage: $0 [-r <role>] [--stream] \"<prompt>\"" >&2
   exit 1
 }
 
@@ -27,10 +25,6 @@ while [[ $# -gt 0 ]]; do
   case "$1" in
     -r)
       ROLE="${2:?Usage: -r <role>}"
-      shift 2
-      ;;
-    -p)
-      PROMPT="${2:?Usage: -p <prompt>}"
       shift 2
       ;;
     --stream)
